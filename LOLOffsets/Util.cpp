@@ -38,6 +38,17 @@ void CUtil::GetOffsets() {
 	pattern = "8D 64 24 00 8A 0E 8D 76 01 80 C1 5F 8A D9 8A C1 D0 EB 02 C0 32 D8 02 C9 80 E3 55 32 D9 8A D3 8A C3 D0 EA 02 C0 32 D0 02 DB 80 E2 55 32 D3 C0 CA 03 80 EA 03 C0 C2 03 80 C2";
 	GetOffset("CastSpell", hModule, pattern, std::string((pattern.length() + 1) / 3, 'x'), -0x9C);
 
+	// GameState
+	pattern = "C7 80 C8 02 00 00 00 00 00 00 C7 80 B4 02 00 00 00 00 00 00 C7 80 B8 02";
+	GetOffset("GameState", hModule, pattern, std::string((pattern.length() + 1) / 3, 'x'), 0x52);
+
+	// CRenderer
+	pattern = "6A 04 8B 4E 14 8D 86 44 02 00 00 50 6A 00 8B 11 FF 92 90 00 00 00 8B 86 B8 03 02 00 89 86 DC 02 02 00 83";
+	GetOffset("CRenderer", hModule, pattern, std::string((pattern.length() + 1) / 3, 'x'), -0x4);
+
+	// SetSpellCD
+	pattern = "8B C8 8B 10 8B 42 04 FF D0 D8 44 24 0C F3 0F 10 4C 24";
+	GetOffset("SetSpellCD", hModule, pattern, std::string((pattern.length() + 1) / 3, 'x'), -0x20);
 }
 
 
@@ -46,8 +57,8 @@ void CUtil::GetOffset(std::string name, HMODULE hModule, std::string pattern, st
 	pattern.erase(std::remove(pattern.begin(), pattern.end(), ' '), pattern.end());
 	unsigned char byte_array[2048];
 	HexStrToByteArray(pattern.c_str(), byte_array, 2048);
-	DWORD objManager = CUtil::Instance()->FindPattern((DWORD)hModule, CUtil::Instance()->GetModuleInfo(hModule).SizeOfImage, byte_array, (char*)mask.c_str());
-	objManager = (*((DWORD*)(objManager + offset))) - (DWORD)CUtil::Instance()->GetLOLBaseAddress();
+	DWORD objManager = this->FindPattern((DWORD)hModule, this->GetModuleInfo(hModule).SizeOfImage, byte_array, (char*)mask.c_str());
+	objManager = (*((DWORD*)(objManager + offset))) - (DWORD)this->GetLOLBaseAddress();
 	std::stringstream buffer;
 	buffer << name << ": 0x" << std::hex << objManager << std::endl;
 	this->AddLog((char*)buffer.str().c_str());
