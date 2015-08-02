@@ -27,10 +27,16 @@ void CUtil::GetOffsets() {
 	}
 
 	// ObjectManager
-	std::string objManagerPattern = "8B 44 24 18 83 C4 14 0F B7 D0 85 D2";
-	DWORD objManagerOffset = 0x18;
-	std::string objManagerMask = std::string((objManagerPattern.length()+1)/3, 'x');
-	GetOffset("ObjectManager", hModule, objManagerPattern, objManagerMask, objManagerOffset);
+	std::string pattern = "8B 44 24 18 83 C4 14 0F B7 D0 85 D2";
+	GetOffset("ObjectManager", hModule, pattern, std::string((pattern.length() + 1) / 3, 'x'), 0x18);
+
+	// LocalPlayer
+	pattern = "8B 46 04 5E C2 04 00 8B 46 08 5E C2 04 00 8B 44 24 08 8B 44 86 04 5E C2 04 00";
+	GetOffset("LocalPlayer", hModule, pattern, std::string((pattern.length() + 1) / 3, 'x'), -0x38);
+
+	// CastSpell
+	pattern = "8D 64 24 00 8A 0E 8D 76 01 80 C1 5F 8A D9 8A C1 D0 EB 02 C0 32 D8 02 C9 80 E3 55 32 D9 8A D3 8A C3 D0 EA 02 C0 32 D0 02 DB 80 E2 55 32 D3 C0 CA 03 80 EA 03 C0 C2 03 80 C2";
+	GetOffset("CastSpell", hModule, pattern, std::string((pattern.length() + 1) / 3, 'x'), -0x9C);
 
 }
 
