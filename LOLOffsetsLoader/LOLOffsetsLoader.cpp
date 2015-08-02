@@ -28,14 +28,14 @@ int main()
 	wcscat_s(szPath, L"\\LOLOffsets.dll");
 
 	WriteProcessMemory(hHandle, lpRemoteString, (void*)szPath, sizeof(szPath) * 2, NULL);
-	MessageBox(NULL, szPath, L"Press OK to inject", MB_OK);
+	// MessageBox(NULL, szPath, L"Press OK to inject", MB_OK);
 	HANDLE hThread = CreateRemoteThread(hHandle, NULL, 0, (LPTHREAD_START_ROUTINE)LoadLibraryW, lpRemoteString, 0, NULL);
 	WaitForSingleObject(hThread, INFINITE);
 	DWORD dwModule;
 	GetExitCodeThread(hThread, &dwModule);
 	CloseHandle(hThread);
 	VirtualFreeEx(hHandle, lpRemoteString, 0, MEM_FREE);
-	MessageBox(NULL, szPath, L"Press OK to unload!", MB_OK);
+	// MessageBox(NULL, szPath, L"Press OK to unload!", MB_OK);
 	hThread = CreateRemoteThread(hHandle, NULL, 0, (LPTHREAD_START_ROUTINE)FreeLibrary, (void*)dwModule, 0, NULL);
 	WaitForSingleObject(hThread, INFINITE);
 	CloseHandle(hThread);
